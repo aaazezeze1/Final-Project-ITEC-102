@@ -22,8 +22,11 @@ namespace Final_Project_ITEC_102
             Options = options;
             SelectedIndex = 0;
         }
+
         private void DisplayOptions()
         {
+            ForegroundColor = ConsoleColor.DarkMagenta;
+
             WriteLine(Prompt);
             for (int i = 0; i < Options.Length; i++)
             {
@@ -34,7 +37,7 @@ namespace Final_Project_ITEC_102
                 if (i == SelectedIndex)
                 {
                     prefix = "*";
-                    ForegroundColor = ConsoleColor.Black;
+                    ForegroundColor = ConsoleColor.DarkMagenta;
                     BackgroundColor = ConsoleColor.White;
                 }
                 else
@@ -48,6 +51,7 @@ namespace Final_Project_ITEC_102
             }
             ResetColor();
         }
+
         public int Run()
         {
             ConsoleKey keyPressed;

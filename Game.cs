@@ -46,6 +46,7 @@ Welcome to Cube Escape. Try to Evade and Escape.
             ReadKey(true);
             Environment.Exit(0);
         }
+
         private void DisplayAboutInfo()
         {
             Clear();
@@ -55,6 +56,7 @@ Welcome to Cube Escape. Try to Evade and Escape.
             ReadKey(true);
             RunMainMenu();
         }
+
         private void RunFirstChoice()
         {
             WriteLine("Placeholder for the first choice");
