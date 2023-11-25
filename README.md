@@ -8,15 +8,7 @@ dodge "blocks". You lose if you go out of the border or hit a block.
 #  What we used for the project
 1. Visual Studio Code and Visual Studio Community 2022
 2. .NET 6 (Long Term Support)
-3. Built in Libraries of C#:
-	- System.Runtime.InteropServices
-	- System
-	- System.Collections.Generic
-	- System.Linq
-	- System.Text
-	- System.Threading.Tasks
-	- System.Globalization
-	- System.Net.NetworkInformation
+3. Built in Libraries of C#
 
 # What to do before starting the game
 Download Visual Studio Code or Visual Studio Community Edtion and download .NET 6. If you use Visual Studio Code you need to

@@ -25,7 +25,6 @@ namespace Final_Project_ITEC_102
         {
             // Made by Amazing Cabiles, Cyrelle Gapit, and Francen Manalo from BSCS-1B
 
-
             IntPtr handle = GetConsoleWindow();
             IntPtr sysMenu = GetSystemMenu(handle, false);
 

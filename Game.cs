@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Console;
+﻿using static System.Console;
 
 namespace Final_Project_ITEC_102
 {
@@ -43,7 +38,7 @@ Welcome to Cube Escape. Try to Evade and Escape.
         private void ExitGame()
         {
             WriteLine("\nPress any key to exit");
-            ReadKey(true);
+            Console.ReadKey(true);
             Environment.Exit(0);
         }
 
@@ -59,8 +54,22 @@ Welcome to Cube Escape. Try to Evade and Escape.
 
         private void RunFirstChoice()
         {
-            WriteLine("Placeholder for the first choice");
-            ExitGame();
+            if (OperatingSystem.IsWindows())
+            {
+                Console.WindowHeight = 30;
+                Console.WindowWidth = 50;
+            }
+
+            // call the Snake class that cointans the code for the main game
+            Snake snake = new Snake();
+            while (true)
+            {
+                snake.WriteBoard();
+                snake.Input();
+                snake.Logic();
+            }
+
+            Console.ReadKey();
         }
     }
 }
