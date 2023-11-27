@@ -1,6 +1,5 @@
 ﻿using static System.Console;
 
-
 namespace Final_Project_ITEC_102
 {
     class Menu

@@ -1,6 +1,9 @@
 ﻿// import library for disabling the minimize and maximize button of the console window
 using System.Runtime.InteropServices;
 
+// import library for playing music
+using System.Media;
+
 namespace Final_Project_ITEC_102
 {
     internal class Program
@@ -23,6 +26,15 @@ namespace Final_Project_ITEC_102
 
         static void Main(string[] args)
         {
+            // play music non stop once the program runs
+            // music from K00sin from https://pixabay.com/music/video-games-chiptune-grooving-142242/
+            if (OperatingSystem.IsWindows())
+            {
+                SoundPlayer music = new SoundPlayer("chiptune-grooving-142242.wav");
+                music.Load();
+                music.PlayLooping();
+            }
+
             // Made by Amazing Cabiles, Cyrelle Gapit, and Francen Manalo from BSCS-1B
 
             IntPtr handle = GetConsoleWindow();
@@ -37,6 +49,7 @@ namespace Final_Project_ITEC_102
 
             Game myGame = new Game();
             myGame.Start();
+ 
         }
     }
 }
