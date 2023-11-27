@@ -19,14 +19,16 @@
 
 ";
 
-
         int Height = 20, Width = 30;
 
+        // helps with the position of the cursor the spawn coordinates of fruits
         int[] X = new int[50];
         int[] Y = new int[50];
 
-        int fruitX, fruitY;
-        int parts = 3;
+        int fruitX, fruitY, fruitA, fruitB, fruitC, fruitD;
+
+        // the snake's body is only one block 
+        int parts = 1;
 
         ConsoleKeyInfo keyInfo = new ConsoleKeyInfo();
         char key = 'W';
@@ -35,12 +37,19 @@
         Random rnd = new Random();
         public Snake()
         {
+            // set coordinate of snake at 5 both x and y
             X[0] = 5;
             Y[0] = 5;
             Console.CursorVisible = false;
             // set random coordinate of fruit upon spawn
             fruitX = rnd.Next(2, (Width - 2));
             fruitY = rnd.Next(2, (Height - 2));
+
+            // set random coordinate of the 2 new fruits
+            fruitA = rnd.Next(2, (Width - 2));
+            fruitB = rnd.Next(2, (Height - 2));
+            fruitC = rnd.Next(3, (Width - 2));
+            fruitD = rnd.Next(3, (Height - 2));
         }
 
         // this creates a small rectangular border
@@ -106,17 +115,26 @@
             {
                 if (Y[0] == fruitY)
                 {
-                    parts++;
-                    fruitX = rnd.Next(2, (Width - 2));
-                    fruitY = rnd.Next(2, (Height - 2));
+                    // if its empty the game ends when snake collects the fruit
+                    fruitX = rnd.Next();
+                    fruitY = rnd.Next();
                 }
             }
-
-            // body of the snake
-            for (int i = parts; i > 1; i--)
+            if (X[0] == fruitA)
             {
-                X[i - 1] = X[i - 2];
-                Y[i - 1] = Y[i - 2];
+                if (Y[0] == fruitB)
+                {
+                    fruitA = rnd.Next();
+                    fruitB = rnd.Next();
+                }
+            }
+            if (X[0] == fruitC)
+            {
+                if (Y[0] == fruitD)
+                {
+                    fruitC = rnd.Next();
+                    fruitD = rnd.Next();
+                }
             }
 
             switch (key)
@@ -136,11 +154,15 @@
                     break;
             }
 
-            // shows the fruits
+            // shows the fruits and the snake
             for (int i = 0; i <= (parts - 1); i++)
             {
                 WritePoint(X[i], Y[i]);
                 WritePoint(fruitX, fruitY);
+
+                // show the 2 new fruits
+                WritePoint(fruitA, fruitB);
+                WritePoint(fruitC, fruitD);
             }
 
             // check collision with the border
@@ -150,7 +172,6 @@
                 Console.WriteLine(loseMessage);
                 Environment.Exit(0);
             }
-
             Thread.Sleep(100);
         }
     }
