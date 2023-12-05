@@ -35,8 +35,6 @@ namespace Final_Project_ITEC_102
                 music.PlayLooping();
             }
 
-            // Made by Amazing Cabiles, Cyrelle Gapit, and Francen Manalo from BSCS-1B
-
             IntPtr handle = GetConsoleWindow();
             IntPtr sysMenu = GetSystemMenu(handle, false);
 
@@ -49,7 +47,6 @@ namespace Final_Project_ITEC_102
 
             Game myGame = new Game();
             myGame.Start();
- 
         }
     }
 }

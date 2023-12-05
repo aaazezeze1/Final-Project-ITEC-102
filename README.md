@@ -3,7 +3,7 @@ Cube Escape - "Try to Evade and Escape",  is our Final Project in ITEC 102 (Fund
 This simple C# console game is made by Amazing Grace Cabiles, Cyrelle Gapit, and Francen Manalo from BSCS-1B.
 
 This game is like the classic snake game with a twist. Instead of collecting "fruits", you are supposed to 
-dodge "blocks". You lose if you go out of the border or hit a block.
+dodge "obstacles" that are block shaped. You lose if you hit the border or hit an obstacle.
 
 #  What we used for the project
 1. Visual Studio Code and Visual Studio Community 2022

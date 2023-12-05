@@ -25,7 +25,7 @@ namespace Final_Project_ITEC_102
                 string currentOption = Options[i];
                 string prefix;
 
-                // change color of selected menu
+                // Change color of the selected menu option
                 if (i == SelectedIndex)
                 {
                     prefix = "*";
