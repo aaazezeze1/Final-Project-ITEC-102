@@ -52,24 +52,200 @@ Welcome to Cube Escape. Try to Evade and Escape.
             RunMainMenu();
         }
 
+        // Run Cube Escape
         private void RunFirstChoice()
         {
-            if (OperatingSystem.IsWindows())
+            Exception? exception = null;
+            char[] DirectionChars = { '■', '■', '■', '■', };
+            int width = Console.WindowWidth;
+            int height = Console.WindowHeight;
+            Random random = new();
+            Tile[,] map = new Tile[width, height];
+            Direction? direction = null;
+            Queue<(int X, int Y)> player = new();
+            (int X, int Y) = (width / 2, height / 2);
+            bool closeRequested = false;
+            int DoorX, DoorY;
+
+            string loseMessage = @"
+██╗   ██╗ ██████╗ ██╗   ██╗    ██╗      ██████╗ ███████╗███████╗    ██╗
+╚██╗ ██╔╝██╔═══██╗██║   ██║    ██║     ██╔═══██╗██╔════╝██╔════╝    ██║
+ ╚████╔╝ ██║   ██║██║   ██║    ██║     ██║   ██║███████╗█████╗      ██║
+  ╚██╔╝  ██║   ██║██║   ██║    ██║     ██║   ██║╚════██║██╔══╝      ╚═╝
+   ██║   ╚██████╔╝╚██████╔╝    ███████╗╚██████╔╝███████║███████╗    ██╗
+   ╚═╝    ╚═════╝  ╚═════╝     ╚══════╝ ╚═════╝ ╚══════╝╚══════╝    ╚═╝                                                
+";
+
+            string winMessage = @"
+██╗   ██╗ ██████╗ ██╗   ██╗    ██╗    ██╗██╗███╗   ██╗     ██████╗  ██████╗ ██╗    ██╗██████╗ ██╗
+╚██╗ ██╔╝██╔═══██╗██║   ██║    ██║    ██║██║████╗  ██║    ██╔════╝ ██╔════╝ ██║    ██║██╔══██╗██║
+ ╚████╔╝ ██║   ██║██║   ██║    ██║ █╗ ██║██║██╔██╗ ██║    ██║  ███╗██║  ███╗██║ █╗ ██║██████╔╝██║
+  ╚██╔╝  ██║   ██║██║   ██║    ██║███╗██║██║██║╚██╗██║    ██║   ██║██║   ██║██║███╗██║██╔═══╝ ╚═╝
+   ██║   ╚██████╔╝╚██████╔╝    ╚███╔███╔╝██║██║ ╚████║    ╚██████╔╝╚██████╔╝╚███╔███╔╝██║     ██╗
+   ╚═╝    ╚═════╝  ╚═════╝      ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝     ╚═════╝  ╚═════╝  ╚══╝╚══╝ ╚═╝     ╚═╝                                                                                                                                                                                                                                                                       
+";
+
+            try
             {
-                Console.WindowHeight = 30;
-                Console.WindowWidth = 50;
+                Console.CursorVisible = false;
+                Console.Clear();
+                player.Enqueue((X, Y));
+                map[X, Y] = Tile.Player;
+                PositionObs();
+                SpawnDoor();
+                Console.SetCursorPosition(X, Y);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write('■');
+
+                while (!direction.HasValue && !closeRequested)
+                {
+                    GetDirection();
+                }
+                while (true)
+                {
+                    // If the console is resized before starting or during the game it automatically becomes game over
+                    if (Console.WindowWidth != width || Console.WindowHeight != height)
+                    {
+                        Console.Clear();
+                        return;
+                    }
+                    switch (direction)
+                    {
+                        case Direction.Up: Y--; break;
+                        case Direction.Down: Y++; break;
+                        case Direction.Left: X--; break;
+                        case Direction.Right: X++; break;
+                    }
+
+                    // Obstacle Collision Mechanic
+                    if (X < 0 || X >= width || Y < 0 || Y >= height || map[X, Y] is Tile.Player)
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(loseMessage);
+                        return;
+                    }
+
+                    Console.SetCursorPosition(X, Y);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(DirectionChars[(int)direction!]);
+                    player.Enqueue((X, Y));
+
+                    // Player and Door Collision Mechanic
+                    if (DoorX == X && DoorY == Y)
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        Console.WriteLine(winMessage);
+                        return;
+                    }
+
+                    // Player and Obstacle Collision Mechanic
+                    if (map[X, Y] is Tile.Obs)
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(loseMessage);
+                        return;
+                    }
+                    else
+                    {
+                        (int x, int y) = player.Dequeue();
+                        map[x, y] = Tile.Open;
+                        Console.SetCursorPosition(x, y);
+                        Console.Write(' ');
+                    }
+                    if (Console.KeyAvailable)
+                    {
+                        GetDirection();
+                    }
+                    Thread.Sleep(100);
+                }
+            }
+            catch (Exception e)
+            {
+                exception = e;
+                throw;
             }
 
-            // call the Snake class that cointans the code for the main game
-            Snake snake = new Snake();
-            while (true)
+            // Arrow Keys for Direction
+            void GetDirection()
             {
-                snake.WriteBoard();
-                snake.Input();
-                snake.Logic();
+                switch (Console.ReadKey(true).Key)
+                {
+                    case ConsoleKey.UpArrow: direction = Direction.Up; break;
+                    case ConsoleKey.DownArrow: direction = Direction.Down; break;
+                    case ConsoleKey.LeftArrow: direction = Direction.Left; break;
+                    case ConsoleKey.RightArrow: direction = Direction.Right; break;
+                }
             }
 
-            Console.ReadKey();
+            // Show Door to the screen
+            void SpawnDoor()
+            {
+                DoorX = random.Next(0, (width - 1));
+                DoorY = random.Next(0, (height - 1));
+                Console.SetCursorPosition(DoorX, DoorY);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write('█');
+            }
+
+            // Add Obstacles
+            void PositionObs()
+            {
+                List<(int X, int Y)> possibleCoordinates = new();
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < height; j++)
+                    {
+                        if (map[i, j] is Tile.Open)
+                        {
+                            possibleCoordinates.Add((i, j));
+                        }
+                    }
+                }
+                for (int k = 0; k < height; k++)
+                {
+                    int index = random.Next(possibleCoordinates.Count);
+                    (int X, int Y) = possibleCoordinates[index];
+                    map[X, Y] = Tile.Obs;
+                    Console.SetCursorPosition(X, Y);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write('*');
+                }
+                for (int p = 0; p < height; p++)
+                {
+                    int index = random.Next(possibleCoordinates.Count);
+                    (int X, int Y) = possibleCoordinates[index];
+                    map[X, Y] = Tile.Obs;
+                    Console.SetCursorPosition(X, Y);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write('*');
+                }
+                for (int n = 0; n < height; n++)
+                {
+                    int index = random.Next(possibleCoordinates.Count);
+                    (int X, int Y) = possibleCoordinates[index];
+                    map[X, Y] = Tile.Obs;
+                    Console.SetCursorPosition(X, Y);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write('*');
+                }
+            }
+        }
+            enum Direction
+        {
+            Up = 0,
+            Down = 1,
+            Left = 2,
+            Right = 3,
+        }
+
+        enum Tile
+        {
+            Open = 0,
+            Player,
+            Obs,
         }
     }
 }
