@@ -1,4 +1,6 @@
-﻿using static System.Console;
+﻿using System.Reflection;
+using System.Xml.Linq;
+using static System.Console;
 
 namespace Final_Project_ITEC_102
 {
@@ -9,8 +11,7 @@ namespace Final_Project_ITEC_102
             Title = "Cube Escape!";
             RunMainMenu();
         }
-
-        private void RunMainMenu()
+        public void RunMainMenu()
         {
             string prompt = @"
  ██████╗██╗   ██╗██████╗ ███████╗    ███████╗███████╗ ██████╗ █████╗ ██████╗ ███████╗
@@ -66,6 +67,7 @@ Welcome to Cube Escape. Try to Evade and Escape.
             (int X, int Y) = (width / 2, height / 2);
             bool closeRequested = false;
             int DoorX, DoorY;
+            int score = 0;
 
             string loseMessage = @"
 ██╗   ██╗ ██████╗ ██╗   ██╗    ██╗      ██████╗ ███████╗███████╗    ██╗
@@ -92,6 +94,7 @@ Welcome to Cube Escape. Try to Evade and Escape.
                 player.Enqueue((X, Y));
                 map[X, Y] = Tile.Player;
                 PositionObs();
+                PositionFood();
                 SpawnDoor();
                 Console.SetCursorPosition(X, Y);
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -117,12 +120,17 @@ Welcome to Cube Escape. Try to Evade and Escape.
                         case Direction.Right: X++; break;
                     }
 
-                    // Obstacle Collision Mechanic
+                    // Player and Border Collision Mechanic
                     if (X < 0 || X >= width || Y < 0 || Y >= height || map[X, Y] is Tile.Player)
                     {
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(loseMessage);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("Game Over! Score: " + score);
+                        Console.WriteLine("You will be redirected shortly to the Menu");
+                        Thread.Sleep(5000);
+                        RunMainMenu();
                         return;
                     }
 
@@ -131,12 +139,24 @@ Welcome to Cube Escape. Try to Evade and Escape.
                     Console.Write(DirectionChars[(int)direction!]);
                     player.Enqueue((X, Y));
 
+                    // Player and Food Collision Mechanic
+                    if (map[X, Y] is Tile.Food)
+                    {
+                        PositionFood();
+                        score = score + 1;
+                    }
+
                     // Player and Door Collision Mechanic
                     if (DoorX == X && DoorY == Y)
                     {
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.DarkCyan;
                         Console.WriteLine(winMessage);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("Game Over! Score: " + score);
+                        Console.WriteLine("You will be redirected shortly to the Menu");
+                        Thread.Sleep(5000);
+                        RunMainMenu();
                         return;
                     }
 
@@ -146,6 +166,11 @@ Welcome to Cube Escape. Try to Evade and Escape.
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(loseMessage);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("Game Over! Score: " + score);
+                        Console.WriteLine("You will be redirected shortly to the Menu");
+                        Thread.Sleep(5000);
+                        RunMainMenu();
                         return;
                     }
                     else
@@ -183,8 +208,8 @@ Welcome to Cube Escape. Try to Evade and Escape.
             // Show Door to the screen
             void SpawnDoor()
             {
-                DoorX = random.Next(0, (width - 1));
-                DoorY = random.Next(0, (height - 1));
+                DoorX = random.Next(0, 1);
+                DoorY = random.Next(0, 1);
                 Console.SetCursorPosition(DoorX, DoorY);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write('█');
@@ -232,8 +257,33 @@ Welcome to Cube Escape. Try to Evade and Escape.
                     Console.Write('*');
                 }
             }
+
+            // Add Fruits
+            void PositionFood()
+            {
+                List<(int X, int Y)> possibleCoordinates = new();
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < height; j++)
+                    {
+                        if (map[i, j] is Tile.Open)
+                        {
+                            possibleCoordinates.Add((i, j));
+                        }
+                    }
+                }
+                for (int k = 0; k < 5; k++)
+                {
+                    int index = random.Next(possibleCoordinates.Count);
+                    (int X, int Y) = possibleCoordinates[index];
+                    map[X, Y] = Tile.Food;
+                    Console.SetCursorPosition(X, Y);
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    Console.Write('+');
+                }
+            }
         }
-            enum Direction
+        enum Direction
         {
             Up = 0,
             Down = 1,
@@ -246,6 +296,7 @@ Welcome to Cube Escape. Try to Evade and Escape.
             Open = 0,
             Player,
             Obs,
+            Food,
         }
     }
 }
