@@ -2,9 +2,10 @@
 Cube Escape! - "Try to Evade and Escape",  is our Final Project in ITEC 102 (Fundamentals of Programming). 
 This simple C# console game is made by Amazing Grace Cabiles, Cyrelle Gapit, and Francen Manalo from BSCS-1B.
 
-This game is like a fusion of Snake and Pac-Man. You have to collect fruits while dodging obstacles. 
-Collecting a fruit gives you one point and the player's body in the game does not grow longer. If you hit an 
-obstacle or you hit the border then you lose the game. You win the game once you go to the door.
+This game is like a fusion of Snake and Pac-Man. The player's body in the game does not grow longer. You have 
+to collect food while dodging obstacles. Collecting food gives you one point. More obstacles will spawn 
+after you collect 6 foods. If you hit an obstacle or you hit the border then you lose the game. You win the 
+game once you go to the door which only spawns after you collect 30 foods.
 
 #  What we used for the project
 1. Visual Studio Code and Visual Studio Community 2022
