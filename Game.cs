@@ -278,7 +278,7 @@ Welcome to Cube Escape. Try to Evade and Escape.
                 }
             }
 
-            // Add Fruits
+            // Add Foods
             void PositionFood()
             {
                 List<(int X, int Y)> possibleCoordinates = new();
